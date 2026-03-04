@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Hikari no Tsubasa</title>
+  <meta name="description" content="Hikari no Tsubasa — a quiet threshold." />
+  <meta name="theme-color" content="#07080c" />
+
+  <style>
+    :root{
+      --bg:#06070b;
+      --text:rgba(255,255,255,0.88);
+      --muted:rgba(255,255,255,0.58);
+      --stroke:rgba(255,255,255,0.12);
+      --panel:rgba(255,255,255,0.05);
+      --shadow: 0 18px 60px rgba(0,0,0,0.55);
+      --radius: 22px;
+      --max: 980px;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background: var(--bg);
+      overflow-x:hidden;
+    }
+
+    /* Animated aurora (pure CSS) */
+    .sky{
+      position:fixed;
+      inset:-20%;
+      background:
+        radial-gradient(1200px 700px at 18% -5%, rgba(120,80,255,0.28), transparent 60%),
+        radial-gradient(900px 600px at 85% 0%, rgba(60,180,255,0.18), transparent 58%),
+        radial-gradient(900px 650px at 70% 110%, rgba(255,80,140,0.12), transparent 60%),
+        radial-gradient(700px 500px at 25% 110%, rgba(80,255,200,0.10), transparent 60%),
+        linear-gradient(180deg, #05060a, #07080c 40%, #05060a);
+      filter: saturate(115%);
+      transform: translate3d(0,0,0);
+      animation: drift 18s ease-in-out infinite;
+      pointer-events:none;
+      z-index:-2;
+    }
+    @keyframes drift{
+      0%{ transform: translate3d(-1.5%, -1%, 0) scale(1.01); }
+      50%{ transform: translate3d(1.2%, 0.8%, 0) scale(1.03); }
+      100%{ transform: translate3d(-1.5%, -1%, 0) scale(1.01); }
+    }
+
+    /* Subtle grain */
+    .grain{
+      position:fixed; inset:-50%;
+      pointer-events:none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+      opacity:0.08;
+      mix-blend-mode: overlay;
+      animation: grain 12s linear infinite;
+      z-index:-1;
+    }
+    @keyframes grain{
+      0%{ transform: translate3d(-2%, -1%, 0); }
+      25%{ transform: translate3d(1%, -2%, 0); }
+      50%{ transform: translate3d(2%, 1%, 0); }
+      75%{ transform: translate3d(-1%, 2%, 0); }
+      100%{ transform: translate3d(-2%, -1%, 0); }
+    }
+
+    .wrap{
+      max-width:var(--max);
+      margin:0 auto;
+      padding: 28px 18px 80px;
+    }
+
+    .shell{
+      border:1px solid var(--stroke);
+      border-radius: calc(var(--radius) + 8px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      overflow:hidden;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding: 18px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .mark{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      min-width: 220px;
+    }
+
+    .sigil{
+      width:40px;
+      height:40px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.28), transparent 42%),
+        radial-gradient(circle at 70% 35%, rgba(120,80,255,0.55), transparent 60%),
+        radial-gradient(circle at 55% 80%, rgba(60,180,255,0.40), transparent 60%),
+        rgba(255,255,255,0.06);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.45);
+      flex: 0 0 auto;
+    }
+
+    .title{
+      margin:0;
+      font-size: 14px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+    .subtitle{
+      margin-top:6px;
+      color:var(--muted);
+      font-size: 12px;
+      font-family: var(--mono);
+      letter-spacing: 0.06em;
+    }
+
+    nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      text-decoration:none;
+      font-size: 13px;
+      white-space: nowrap;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .pill:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.22);
+    }
+
+    .hero{
+      padding: 26px 18px 18px;
+    }
+
+    .quote{
+      margin:0;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    .hint{
+      margin-top: 10px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 14px;
+      max-width: 70ch;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 0 18px 18px;
+    }
+    @media (max-width: 860px){
+      header{ flex-direction: column; align-items: stretch; }
+      nav{ justify-content:flex-start; }
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .panel{
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .panel h2{
+      margin:0 0 10px;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.78);
+    }
+
+    .list{ display:grid; gap:10px; }
+
+    .item{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.20);
+      color: var(--text);
+      text-decoration:none;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .item:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.18);
+    }
+    .item .meta{
+      font-family: var(--mono);
+      color: rgba(255,255,255,0.48);
+      font-size: 11px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    .item .t{
+      font-size: 14px;
+      line-height: 1.25;
+    }
+    .item .d{
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .footer{
+      padding: 12px 18px 16px;
+      border-top: 1px solid rgba(255,255,255,0.10);
+      color: rgba(255,255,255,0.45);
+      font-size: 12px;
+      display:flex;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap:wrap;
+    }
+    .footer a{ color: rgba(255,255,255,0.65); text-decoration:none; }
+    .footer a:hover{ text-decoration: underline; }
+  </style>
+</head>
+
+<body>
+  <div class="sky"></div>
+  <div class="grain"></div>
+
+  <div class="wrap">
+    <div class="shell">
+      <header>
+        <div class="mark">
+          <div class="sigil" aria-hidden="true"></div>
+          <div>
+            <h1 class="title">Hikari no Tsubasa</h1>
+            <div class="subtitle">光の翼 • threshold archive</div>
+          </div>
+        </div>
+
+        <nav>
+          <a class="pill" href="https://blog.crimson-moonlight.net">Blog</a>
+          <a class="pill" href="#latest">Latest</a>
+          <a class="pill" href="#paths">Paths</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="quote">“Leave only what must be found.”</p>
+        <p class="hint">
+          A quiet index. A doorway. Nothing more than a few trails to follow.
+        </p>
+      </section>
+
+      <section class="grid">
+        <div class="panel" id="latest" aria-live="polite">
+          <h2>Latest</h2>
+          <div class="list" id="posts">
+            <a class="item" href="https://blog.crimson-moonlight.net">
+              <div>
+                <div class="t">Go to the blog</div>
+                <div class="d">If the feed is hidden, the archive remains.</div>
+              </div>
+              <div class="meta">fallback</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="panel" id="paths">
+          <h2>Paths</h2>
+          <div class="list">
+            <a class="item" href="https://blog.crimson-moonlight.net">
+              <div>
+                <div class="t">Archive</div>
+                <div class="d">Long-form notes, fragments, and records.</div>
+              </div>
+              <div class="meta">blog</div>
+            </a>
+
+            <!-- Enable later if you create files.crimson-moonlight.net -->
+            <a class="item" href="#" onclick="return false;">
+              <div>
+                <div class="t">Vault</div>
+                <div class="d">Downloads and artifacts (not yet disclosed).</div>
+              </div>
+              <div class="meta">soon</div>
+            </a>
+
+            <!-- Optional future projects page -->
+            <a class="item" href="#" onclick="return false;">
+              <div>
+                <div class="t">Works</div>
+                <div class="d">Experiments and constructions (eventually).</div>
+              </div>
+              <div class="meta">soon</div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">
+        <div>© <span id="y"></span> Hikari no Tsubasa</div>
+        <div><a href="https://blog.crimson-moonlight.net">enter the archive</a></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Year
+    document.getElementById("y").textContent = new Date().getFullYear();
+
+    // Latest posts from WordPress.com (optional enhancement)
+    // If this fails (CORS / privacy / site setting), the page still works via fallback.
+    const WP_SITE = "blog.crimson-moonlight.net";
+    const POSTS_TO_SHOW = 4;
+
+    const api = `https://public-api.wordpress.com/rest/v1.1/sites/${encodeURIComponent(WP_SITE)}/posts/?number=${POSTS_TO_SHOW}`;
+
+    function stripHtml(html){
+      const div = document.createElement("div");
+      div.innerHTML = html || "";
+      return (div.textContent || div.innerText || "").trim();
+    }
+
+    function formatDate(iso){
+      try{
+        const d = new Date(iso);
+        return d.toLocaleDateString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      }catch{
+        return "—";
+      }
+    }
+
+    async function loadPosts(){
+      const container = document.getElementById("posts");
+      try{
+        const res = await fetch(api, { mode: "cors" });
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if(!data || !Array.isArray(data.posts) || data.posts.length === 0) throw new Error("No posts");
+
+        container.innerHTML = "";
+        for(const p of data.posts){
+          const title = stripHtml(p.title) || "Untitled";
+          const excerpt = stripHtml(p.excerpt) || "";
+          const url = p.URL || "https://blog.crimson-moonlight.net";
+          const date = formatDate(p.date);
+
+          const a = document.createElement("a");
+          a.className = "item";
+          a.href = url;
+          a.innerHTML = `
+            <div>
+              <div class="t">${title}</div>
+              <div class="d">${excerpt.slice(0, 110)}${excerpt.length > 110 ? "…" : ""}</div>
+            </div>
+            <div class="meta">${date}</div>
+          `;
+          container.appendChild(a);
+        }
+
+        // add a final “view all” item
+        const all = document.createElement("a");
+        all.className = "item";
+        all.href = "https://blog.crimson-moonlight.net";
+        all.innerHTML = `
+          <div>
+            <div class="t">View all entries</div>
+            <div class="d">Open the archive index.</div>
+          </div>
+          <div class="meta">→</div>
+        `;
+        container.appendChild(all);
+
+      }catch(e){
+        // keep fallback silently (enigma mode)
+        console.log("Feed not available:", e.message);
+      }
+    }
+
+    loadPosts();
+  </script>
+</body>
+</html>
