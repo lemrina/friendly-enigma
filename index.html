@@ -274,7 +274,7 @@
         </div>
 
         <nav>
-          <a class="pill" href="https://blog.crimson-moonlight.net">Blog</a>
+          <a class="pill" href="https://nikki.crimson-moonlight.net">Blog</a>
           <a class="pill" href="#latest">Latest</a>
           <a class="pill" href="#paths">Paths</a>
         </nav>
@@ -291,7 +291,7 @@
         <div class="panel" id="latest" aria-live="polite">
           <h2>Latest</h2>
           <div class="list" id="posts">
-            <a class="item" href="https://blog.crimson-moonlight.net">
+            <a class="item" href="https://nikki.crimson-moonlight.net">
               <div>
                 <div class="t">Go to the blog</div>
                 <div class="d">If the feed is hidden, the archive remains.</div>
@@ -304,7 +304,7 @@
         <div class="panel" id="paths">
           <h2>Paths</h2>
           <div class="list">
-            <a class="item" href="https://blog.crimson-moonlight.net">
+            <a class="item" href="https://nikki.crimson-moonlight.net">
               <div>
                 <div class="t">Archive</div>
                 <div class="d">Long-form notes, fragments, and records.</div>
@@ -335,7 +335,7 @@
 
       <div class="footer">
         <div>© <span id="y"></span> Hikari no Tsubasa</div>
-        <div><a href="https://blog.crimson-moonlight.net">enter the archive</a></div>
+        <div><a href="https://nikki.crimson-moonlight.net">enter the archive</a></div>
       </div>
     </div>
   </div>
@@ -346,7 +346,7 @@
 
     // Latest posts from WordPress.com (optional enhancement)
     // If this fails (CORS / privacy / site setting), the page still works via fallback.
-    const WP_SITE = "blog.crimson-moonlight.net";
+    const WP_SITE = "nikki.crimson-moonlight.net";
     const POSTS_TO_SHOW = 4;
 
     const api = `https://public-api.wordpress.com/rest/v1.1/sites/${encodeURIComponent(WP_SITE)}/posts/?number=${POSTS_TO_SHOW}`;
@@ -416,4 +416,5 @@
     loadPosts();
   </script>
 </body>
+
 </html>
